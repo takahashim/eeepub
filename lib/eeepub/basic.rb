@@ -3,7 +3,7 @@ require 'fileutils'
 
 module EeePub
   class Basic
-    attr_accessor :title, :creator, :publisher, :date, :id, :uid, :files, :nav
+    attr_accessor :title, :creator, :publisher, :date, :id, :uid, :files, :nav, :ncx_file, :opf_file
 
     def initialize(values)
       values.each do |k, v|
@@ -11,6 +11,8 @@ module EeePub
       end
       @files ||= []
       @nav ||= []
+      @ncx_file ||= 'toc.ncx'
+      @opf_file ||= 'content.opf'
     end
 
     def save(filename)
@@ -24,7 +26,7 @@ module EeePub
         :uid => uid,
         :title => title,
         :nav => nav
-      ).save(File.join(dir, 'toc.ncx'))
+      ).save(File.join(dir, ncx_file))
 
       EeePub::OPF.new(
         :title => title,
@@ -34,11 +36,11 @@ module EeePub
         :date => date,
         :manifest => files.map{|i| File.basename(i)},
         :ncx => 'toc.ncx'
-      ).save(File.join(dir, 'content.opf'))
+      ).save(File.join(dir, opf_file))
 
       EeePub::OCF.new(
         :dir => dir,
-        :container => 'content.opf'
+        :container => opf_file
       ).save(filename)
 
       FileUtils.rm_rf(dir)
