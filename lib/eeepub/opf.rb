@@ -31,13 +31,8 @@ module EeePub
       when String
         [{:value => @identifier, :id => unique_identifier}]
       when Hash
-        if @identifier.size == 1
-          key = @identifier.keys[0]
-          [{:scheme => key, :value => @identifier[key], :id => unique_identifier}]
-        else
-          @identifier[:id] = unique_identifier
-          [@identifier]
-        end
+        @identifier[:id] = unique_identifier
+        [@identifier]
       else
         @identifier
       end
@@ -82,7 +77,7 @@ module EeePub
           [value].flatten.each do |v|
             case v
             when Hash
-              builder.dc i, v[:value], create_build_option(v.reject {|k, v| k == :value})
+              builder.dc i, v[:value], convert_to_xml_attributes(v.reject {|k, v| k == :value})
             else
               builder.dc i, v
             end
@@ -112,7 +107,7 @@ module EeePub
 
       builder.guide do
         guide.each do |i|
-          builder.reference create_build_option(i)
+          builder.reference convert_to_xml_attributes(i)
         end
       end
     end
