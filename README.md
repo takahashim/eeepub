@@ -3,6 +3,11 @@ EeePub
 
 EeePub is a Ruby ePub generator.
 
+Note
+-------
+
+I am thinking more better API now...
+
 Usage
 -------
 
@@ -55,6 +60,13 @@ Install
 -------
 
     gem install eeepub
+
+Requirements
+-------
+
+* ruby 1.8.7
+* builder
+* eBook Reader :)
 
 Copyright
 -------

@@ -35,7 +35,7 @@ module EeePub
         :publisher => publisher,
         :date => date,
         :manifest => files.map{|i| File.basename(i)},
-        :ncx => 'toc.ncx'
+        :ncx => ncx_file
       ).save(File.join(dir, opf_file))
 
       EeePub::OCF.new(

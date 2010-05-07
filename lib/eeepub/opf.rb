@@ -13,6 +13,7 @@ module EeePub
                   :rights,
                   :manifest,
                   :spine,
+                  :guide,
                   :ncx,
                   :toc
 
@@ -57,6 +58,7 @@ module EeePub
         build_metadata(builder)
         build_manifest(builder)
         build_spine(builder)
+        build_guide(builder)
       end
     end
 
@@ -75,8 +77,13 @@ module EeePub
 
         [:title, :language, :subject, :description, :relation, :creator, :publisher, :date, :rights].each do |i|
           value = self.send(i)
-          if value
-            [value].flatten.each do |v|
+          next unless value
+
+          [value].flatten.each do |v|
+            case v
+            when Hash
+              builder.dc i, v[:value], create_build_option(v.reject {|k, v| k == :value})
+            else
               builder.dc i, v
             end
           end
@@ -96,6 +103,16 @@ module EeePub
       builder.spine :toc => toc do
         spine.each do |i|
           builder.itemref :idref => i
+        end
+      end
+    end
+
+    def build_guide(builder)
+      return if guide.nil? || guide.empty?
+
+      builder.guide do
+        guide.each do |i|
+          builder.reference create_build_option(i)
         end
       end
     end
